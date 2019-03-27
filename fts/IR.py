@@ -6,7 +6,7 @@ import pandas as pd
 import sqlite3
 
 import lucene
-
+import os
 from java.nio.file import Paths
 from org.apache.lucene.analysis.standard import StandardAnalyzer
 from org.apache.lucene.search import IndexSearcher
@@ -15,8 +15,9 @@ from org.apache.lucene.queryparser.classic import QueryParser
 from org.apache.lucene.store import SimpleFSDirectory
 
 Qt = QtCore.Qt
-
+PATH = ''
 LIMIT = 10
+
 
 
 class PandasModel(QtGui.QStandardItemModel):
@@ -46,11 +47,13 @@ class PandasModel(QtGui.QStandardItemModel):
 class mywindow(QtWidgets.QMainWindow):
     def __init__(self):
         super(mywindow, self).__init__()
-        self.ui = uic.loadUi("/Users/euloo/Documents/GitHub/information-retrieval/design.ui", self)
+
+        #path = os.getcwd() # '/Users/euloo/Documents/GitHub/information-retrieval/fts'
+        self.ui = uic.loadUi(PATH + "/design.ui", self)
 
         self.ui.pushButton.clicked.connect(self.btnClicked)
         self.ui.comboBox.currentTextChanged.connect(self.onChange)
-        #self.ui.p
+
 
     def btnClicked(self):
         substring = self.ui.lineEdit.text()
@@ -74,7 +77,8 @@ class mywindow(QtWidgets.QMainWindow):
                 con = psycopg2.connect(user='developer', password='rtfP@ssw0rd', host='84.201.147.162',
                                        dbname='information_retrieval')
             else:
-                con = sqlite3.connect('/Users/euloo/imdb.db')
+                #con = sqlite3.connect('/Users/euloo/imdb.db')
+                con = sqlite3.connect(PATH + '/imdb.db')
             df = pd.read_sql('select * from movies where ' + query, con).head(LIMIT)
             con.close()
             df = df.fillna('').astype(str)
@@ -105,6 +109,7 @@ class mywindow(QtWidgets.QMainWindow):
 
 
 if __name__ == '__main__':
+    PATH = os.getcwd()
     app = QApplication([])
     application = mywindow()
     application.show()

@@ -2,7 +2,7 @@
 
 import sys
 import lucene
-
+import os
 from java.nio.file import Paths
 from org.apache.lucene.analysis.standard import StandardAnalyzer
 from org.apache.lucene.document import Document, IntPoint, TextField, Field, StringField
@@ -11,8 +11,11 @@ from org.apache.lucene.store import SimpleFSDirectory
 
 import sqlite3
 import pandas as pd
+PATH = ''
 
 if __name__ == "__main__":
+
+    PATH = os.getcwd()
     lucene.initVM()
     indexDir = SimpleFSDirectory(Paths.get('index'))
     writerConfig = IndexWriterConfig(StandardAnalyzer())
@@ -21,7 +24,7 @@ if __name__ == "__main__":
     print("%d docs in index" % writer.numDocs())
     print("Reading lines from sys.stdin...")
 
-    con = sqlite3.connect('/Users/euloo/imdb.db')
+    con = sqlite3.connect(PATH + '/imdb.db')
     df = pd.read_sql('select * from movies', con)
     con.close()
     for v in df.values:
