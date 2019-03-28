@@ -7,6 +7,8 @@ import sqlite3
 
 import lucene
 import os
+import resources
+
 from java.nio.file import Paths
 from org.apache.lucene.analysis.standard import StandardAnalyzer
 from org.apache.lucene.search import IndexSearcher
@@ -48,38 +50,46 @@ class mywindow(QtWidgets.QMainWindow):
     def __init__(self):
         super(mywindow, self).__init__()
 
-        #path = os.getcwd() # '/Users/euloo/Documents/GitHub/information-retrieval/fts'
+
         self.ui = uic.loadUi(PATH + "/design.ui", self)
 
         self.ui.pushButton.clicked.connect(self.btnClicked)
         self.ui.comboBox.currentTextChanged.connect(self.onChange)
 
+        self._layout = self.layout()
+        self.movie = QtGui.QMovie(':/images/spinner.gif', QtCore.QByteArray(), self)
+        self.movie_screen = QtWidgets.QLabel()
+        self.movie_screen.setAlignment(Qt.AlignCenter)
+        self.ui.verticalLayout.addWidget(self.movie_screen)
+        self.setLayout(self.ui.verticalLayout)
+        self.movie_screen.setMovie(self.movie)
+        self.movie.start()
+        self.movie.loopCount()
 
     def btnClicked(self):
-        substring = self.ui.lineEdit.text()
-        if not self.ui.radioButton_3.isChecked():
-            mode = self.ui.comboBox.currentText()
 
+        substring = self.ui.lineEdit.text()
+        mode = self.ui.comboBox.currentText()
+        if not self.ui.radioButton_3.isChecked():
             if mode == 'Полное совпадение':
-                query = """lower(name) = lower('{}')""".format(substring)
+                query_string = """lower(name) = lower('{}')""".format(substring)
             if mode == 'Частичное совпадение':
-                query = """lower(name) like lower('%{}%')""".format(substring)
+                query_string = """lower(name) like lower('%{}%')""".format(substring)
             if mode == 'Полное совпадение + Год':
                 year_substring = self.ui.lineEdit_2.text()
                 year_substring = '= ' + year_substring if year_substring != '' else ' is null'
-                query = """lower(name) = lower('{}') and year {}""".format(substring, year_substring)
+                query_string = """lower(name) = lower('{}') and year {}""".format(substring, year_substring)
             if mode == 'Частичное совпадение + Год':
                 year_substring = self.ui.lineEdit_2.text()
                 year_substring = '= ' + year_substring if year_substring != '' else ' is null'
-                query = """lower(name) like lower('%{}%') and year {}""".format(substring, year_substring)
+                query_string = """lower(name) like lower('%{}%') and year {}""".format(substring, year_substring)
 
             if self.ui.radioButton.isChecked():
                 con = psycopg2.connect(user='developer', password='rtfP@ssw0rd', host='84.201.147.162',
                                        dbname='information_retrieval')
             else:
-                #con = sqlite3.connect('/Users/euloo/imdb.db')
                 con = sqlite3.connect(PATH + '/imdb.db')
-            df = pd.read_sql('select * from movies where ' + query, con).head(LIMIT)
+            df = pd.read_sql('select * from movies where ' + query_string, con).head(LIMIT)
             con.close()
             df = df.fillna('').astype(str)
             df['year'] = df['year'].apply(lambda x: x.replace('.0', ''))
@@ -89,14 +99,26 @@ class mywindow(QtWidgets.QMainWindow):
             reader = DirectoryReader.open(indexDir)
             searcher = IndexSearcher(reader)
 
-            query = QueryParser("name", StandardAnalyzer()).parse(substring)
+            if mode == 'Полное совпадение':
+                query_string = 'name:"{}"'.format(substring)
+            if mode == 'Частичное совпадение':
+                query_string = 'name:{}'.format(substring)
+            if mode == 'Полное совпадение + Год':
+                year_substring = self.ui.lineEdit_2.text()
+                query_string = 'name:"{}" AND year:"{}"'.format(substring, year_substring)
+            if mode == 'Частичное совпадение + Год':
+                year_substring = self.ui.lineEdit_2.text()
+                query_string = 'name:{} AND year:"{}"'.format(substring, year_substring)
+
+            query = QueryParser("defaultField", StandardAnalyzer()).parse(query_string)
             hits = searcher.search(query, LIMIT)
 
             df = pd.DataFrame()
             for hit in hits.scoreDocs:
                 doc = searcher.doc(hit.doc)
                 df = df.append([[doc.get('id'), doc.get('name'), doc.get('year')]], ignore_index=True)
-            df.columns = ['id', 'name', 'year']
+            if not df.empty:
+                df.columns = ['id', 'name', 'year']
 
         model = PandasModel(df)
         self.tableView.setModel(model)
