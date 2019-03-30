@@ -53,6 +53,8 @@ class mywindow(QtWidgets.QMainWindow):
 
         self.ui = uic.loadUi(PATH + "/design.ui", self)
 
+        self.ui.radioButton_2.setEnabled(False)
+
         self.ui.pushButton.clicked.connect(self.btnClicked)
         self.ui.comboBox.currentTextChanged.connect(self.onChange)
 
@@ -72,17 +74,24 @@ class mywindow(QtWidgets.QMainWindow):
         mode = self.ui.comboBox.currentText()
         if not self.ui.radioButton_3.isChecked():
             if mode == 'Полное совпадение':
-                query_string = """lower(name) = lower('{}')""".format(substring)
+                query_string = """name ilike '{}'""".format(substring)
             if mode == 'Частичное совпадение':
-                query_string = """lower(name) like lower('%{}%')""".format(substring)
+                query_string = """name ilike '%{}%'""".format(substring)
+            if mode == 'Частичное совпадение по словам':
+                query_string = ' or '.join(["""name ilike '%{}%'""".format(ss) for ss in substring.split()])
             if mode == 'Полное совпадение + Год':
                 year_substring = self.ui.lineEdit_2.text()
                 year_substring = '= ' + year_substring if year_substring != '' else ' is null'
-                query_string = """lower(name) = lower('{}') and year {}""".format(substring, year_substring)
+                query_string = """name ilike '{}' and year {}""".format(substring, year_substring)
             if mode == 'Частичное совпадение + Год':
                 year_substring = self.ui.lineEdit_2.text()
                 year_substring = '= ' + year_substring if year_substring != '' else ' is null'
-                query_string = """lower(name) like lower('%{}%') and year {}""".format(substring, year_substring)
+                query_string = """name ilike '%{}%' and year {}""".format(substring, year_substring)
+            if mode == 'Частичное совпадение по словам + Год':
+                year_substring = self.ui.lineEdit_2.text()
+                year_substring = '= ' + year_substring if year_substring != '' else ' is null'
+                query_string = ' or '.join(["""name ilike '%{}%'""".format(ss) for ss in substring.split()])
+                query_string = '({}) and year {}'.format(query_string,year_substring)
 
             if self.ui.radioButton.isChecked():
                 con = psycopg2.connect(user='developer', password='rtfP@ssw0rd', host='84.201.147.162',
@@ -103,12 +112,19 @@ class mywindow(QtWidgets.QMainWindow):
                 query_string = 'name:"{}"'.format(substring)
             if mode == 'Частичное совпадение':
                 query_string = 'name:{}'.format(substring)
+            if mode == 'Частичное совпадение по словам':
+                query_string = ' or '.join(["""name:{}""".format(ss) for ss in substring.split()])
             if mode == 'Полное совпадение + Год':
                 year_substring = self.ui.lineEdit_2.text()
                 query_string = 'name:"{}" AND year:"{}"'.format(substring, year_substring)
             if mode == 'Частичное совпадение + Год':
                 year_substring = self.ui.lineEdit_2.text()
                 query_string = 'name:{} AND year:"{}"'.format(substring, year_substring)
+            if mode == 'Частичное совпадение по словам + Год':
+                year_substring = self.ui.lineEdit_2.text()
+                query_string = ' or '.join(["""name:{}""".format(ss) for ss in substring.split()])
+                query_string = '({}) and year:"{}"'.format(query_string, year_substring)
+
 
             query = QueryParser("defaultField", StandardAnalyzer()).parse(query_string)
             hits = searcher.search(query, LIMIT)
