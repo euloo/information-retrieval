@@ -75,6 +75,8 @@ class mywindow(QtWidgets.QMainWindow):
                 query_string = """name ilike '{}'""".format(substring)
             if mode == 'Частичное совпадение':
                 query_string = """name ilike '%{}%'""".format(substring)
+            if mode == 'Частичное совпадение по словам':
+                query_string = ' or '.join(["""name ilike '%{}%'""".format(ss) for ss in substring.split()])
             if mode == 'Полное совпадение + Год':
                 year_substring = self.ui.lineEdit_2.text()
                 year_substring = '= ' + year_substring if year_substring != '' else ' is null'
@@ -83,6 +85,11 @@ class mywindow(QtWidgets.QMainWindow):
                 year_substring = self.ui.lineEdit_2.text()
                 year_substring = '= ' + year_substring if year_substring != '' else ' is null'
                 query_string = """name ilike '%{}%' and year {}""".format(substring, year_substring)
+            if mode == 'Частичное совпадение по словам + Год':
+                year_substring = self.ui.lineEdit_2.text()
+                year_substring = '= ' + year_substring if year_substring != '' else ' is null'
+                query_string = ' or '.join(["""name ilike '%{}%'""".format(ss) for ss in substring.split()])
+                query_string = '({}) and and year {}'.format(query_string,year_substring)
 
             if self.ui.radioButton.isChecked():
                 con = psycopg2.connect(user='developer', password='rtfP@ssw0rd', host='84.201.147.162',
