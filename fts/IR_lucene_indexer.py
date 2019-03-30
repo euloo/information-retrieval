@@ -1,5 +1,3 @@
-#!/home/mars/anaconda3/bin/python3.6
-
 import sys
 import lucene
 import os

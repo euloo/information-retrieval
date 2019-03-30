@@ -1,13 +1,17 @@
 # Files descriptions
 
-**IR.py - файл, реализующий приложение с интерфейсом поиска (основной)**
-[IR.py](IR.py)
-IR_load.py - скрипт загрузки данных в базу данных PostgreSQL + Sqlite
+**[IR.py](IR.py) - файл, реализующий приложение с интерфейсом поиска (основной)**
 
-IR_lucene_indexer.py - скрипт индексирования данных
+[IR_load.py](IR_load.py) - скрипт загрузки данных в базу данных PostgreSQL + Sqlite
 
-IR_lucene_retriever.py - тестовый скрипт поиска данных по индексу
+[IR_lucene_indexer.py](IR_lucene_indexer.py) - скрипт индексирования данных
 
-check.py - проверка зависимостей
+[IR_lucene_retriever.py](IR_lucene_retriever.py) - тестовый скрипт поиска данных по индексу
 
-resources.py - файл с ресурсами интерфейса
+[check.py](check.py) - проверка зависимостей
+
+[resources.py](resources.py) - файл с ресурсами интерфейса
+
+[IR_PandasModel.py](IR_PandasModel.py)- модель **M**VC для отображения pandas dataframe 
+
+[search.log](search.log) - лог поиска
