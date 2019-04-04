@@ -72,8 +72,8 @@ class MyWindow(QtWidgets.QMainWindow):
 
             # PostgreSQL connection
             if self.ui.radioButton_PostgreSQL.isChecked():
-                con = psycopg2.connect(user='developer', password='rtfP@ssw0rd', host='84.201.147.162',
-                                       dbname='information_retrieval')
+                con = psycopg2.connect(user='', password='', host='',
+                                       dbname='')
                 se = 'PostgreSQL'
 
             # SQLite connection
