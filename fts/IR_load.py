@@ -8,7 +8,7 @@ df['Movie Year'] = df[' Movie Name'].apply(lambda x: ';'.join(re.findall('\((\d{
 df[' Movie Name'] = df[' Movie Name'].apply(lambda x: re.sub(' \(.*', '', x).strip())
 df['Movie Year'] = df['Movie Year'].fillna(0)
 
-con = psycopg2.connect(user='developer', password='rtfP@ssw0rd', host='db.mirvoda.com', port='5454', dbname='information_retrieval')
+con = psycopg2.connect(user='', password='', host='', port='', dbname='information_retrieval')
 cur = con.cursor()
 
 cur.executemany('insert into movies values(%s, %s, %s)', df.values)
