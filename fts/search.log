@@ -1,0 +1,122 @@
+INFO:root:Searched [name ilike '%dog%'] with PostgreSQL for 0.6858580112457275 s
+INFO:root:       id                       name  year
+0    9018                A Dogs Life  1918
+1   31054    Arrest Bulldog Drummond  1939
+2   67275  Mad Dogs &amp; Englishmen  1971
+3   67800                 Straw Dogs  1971
+4   72730          A Boy and His Dog  1975
+5   72890          Dog Day Afternoon  1975
+6   84899                  White Dog  1982
+7   96787      All Dogs Go to Heaven  1989
+8  105236             Reservoir Dogs  1992
+9  107473          Mad Dog and Glory  1993
+INFO:root:---------------------------------------------------------
+INFO:root:Searched [name:dog] with Lucene for 2.3143906593322754 s
+INFO:root:        id             name  year
+0    84899        White Dog  1982
+1   120885      Wag the Dog  1997
+2   280609     Dog Soldiers  2002
+3   342258    Danny the Dog  2005
+4   393735   The Shaggy Dog  2006
+5   426883        Alpha Dog  2006
+6   756729  Year of the Dog  2007
+7   803061          Red Dog  2011
+8   808232       A Dog Year  2009
+9  1232838       Triple Dog  2010
+INFO:root:---------------------------------------------------------
+INFO:root:Searched [name:dogs] with Lucene for 0.06777501106262207 s
+INFO:root:        id            name  year
+0     9018     A Dogs Life  1918
+1    67800      Straw Dogs  1971
+2   105236  Reservoir Dogs  1992
+3   281373       Snow Dogs  2002
+4   420901   Shooting Dogs  2005
+5   785006  Hotel for Dogs  2009
+6   858433    Diamond Dogs  2007
+7   976238        Old Dogs  2009
+8   999913      Straw Dogs  2011
+9  1588362    Isle of Dogs  2011
+INFO:root:---------------------------------------------------------
+INFO:root:Searched [name:dog] with Lucene for 0.21006298065185547 s
+INFO:root:        id             name  year
+0    84899        White Dog  1982
+1   120885      Wag the Dog  1997
+2   280609     Dog Soldiers  2002
+3   342258    Danny the Dog  2005
+4   393735   The Shaggy Dog  2006
+5   426883        Alpha Dog  2006
+6   756729  Year of the Dog  2007
+7   803061          Red Dog  2011
+8   808232       A Dog Year  2009
+9  1232838       Triple Dog  2010
+INFO:root:---------------------------------------------------------
+INFO:root:Searched [name ilike '%dog%'] with PostgreSQL for 0.3567788600921631 s
+INFO:root:       id                       name  year
+0    9018                A Dogs Life  1918
+1   31054    Arrest Bulldog Drummond  1939
+2   67275  Mad Dogs &amp; Englishmen  1971
+3   67800                 Straw Dogs  1971
+4   72730          A Boy and His Dog  1975
+5   72890          Dog Day Afternoon  1975
+6   84899                  White Dog  1982
+7   96787      All Dogs Go to Heaven  1989
+8  105236             Reservoir Dogs  1992
+9  107473          Mad Dog and Glory  1993
+INFO:root:---------------------------------------------------------
+INFO:root:Searched [name ilike '%dog%' or name ilike '%reservoir%'] with PostgreSQL for 0.3144040107727051 s
+INFO:root:       id                       name  year
+0    9018                A Dogs Life  1918
+1   31054    Arrest Bulldog Drummond  1939
+2   67275  Mad Dogs &amp; Englishmen  1971
+3   67800                 Straw Dogs  1971
+4   72730          A Boy and His Dog  1975
+5   72890          Dog Day Afternoon  1975
+6   84899                  White Dog  1982
+7   96787      All Dogs Go to Heaven  1989
+8  105236             Reservoir Dogs  1992
+9  107473          Mad Dog and Glory  1993
+INFO:root:---------------------------------------------------------
+INFO:root:Searched [name:dog or name:reservoir] with Lucene for 0.07729291915893555 s
+INFO:root:       id             name  year
+0  105236   Reservoir Dogs  1992
+1   84899        White Dog  1982
+2  120885      Wag the Dog  1997
+3  280609     Dog Soldiers  2002
+4  342258    Danny the Dog  2005
+5  393735   The Shaggy Dog  2006
+6  426883        Alpha Dog  2006
+7  756729  Year of the Dog  2007
+8  803061          Red Dog  2011
+9  808232       A Dog Year  2009
+INFO:root:---------------------------------------------------------
+INFO:root:Searched [(name:dog or name:reservoir) and year:"2006"] with Lucene for 0.06180381774902344 s
+INFO:root:       id             name  year
+0  393735   The Shaggy Dog  2006
+1  426883        Alpha Dog  2006
+2  105236   Reservoir Dogs  1992
+3   84899        White Dog  1982
+4  120885      Wag the Dog  1997
+5  280609     Dog Soldiers  2002
+6  342258    Danny the Dog  2005
+7  756729  Year of the Dog  2007
+8  803061          Red Dog  2011
+9  808232       A Dog Year  2009
+INFO:root:---------------------------------------------------------
+INFO:root:Searched [name ilike '%foorest%'] with PostgreSQL for 0.3175468444824219 s
+INFO:root:Empty DataFrame
+Columns: [id, name, year]
+Index: []
+INFO:root:---------------------------------------------------------
+INFO:root:Searched [name ilike '%forest%'] with PostgreSQL for 0.296450138092041 s
+INFO:root:        id                           name  year
+0   104254  FernGully The Last Rainforest  1992
+1   417686           Forest of the Damned  2005
+2  2215676              The Warped Forest  2011
+3  2444006                Fuck for Forest  2012
+INFO:root:---------------------------------------------------------
+INFO:root:Searched [name:forest] with Lucene for 0.04180788993835449 s
+INFO:root:        id                  name  year
+0   417686  Forest of the Damned  2005
+1  2215676     The Warped Forest  2011
+2  2444006       Fuck for Forest  2012
+INFO:root:---------------------------------------------------------
