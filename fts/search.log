@@ -120,3 +120,72 @@ INFO:root:        id                  name  year
 1  2215676     The Warped Forest  2011
 2  2444006       Fuck for Forest  2012
 INFO:root:---------------------------------------------------------
+INFO:root:Searched [select * from movies where name ilike %(title)s] with PostgreSQL for 2.125723123550415 s
+INFO:root:        id name  year
+0  1465478  Die  2010
+INFO:root:---------------------------------------------------------
+INFO:root:Searched [select * from movies where name ilike '%%'||%(title)s||'%%'] with PostgreSQL for 1.6426446437835693 s
+INFO:root:      id                              name  year
+0  15174   Die Nibelungen Kriemhilds Rache  1924
+1  15175          Die Nibelungen Siegfried  1924
+2  15532  Die Abenteuer des Prinzen Achmed  1926
+3  18452                     Sugar Daddies  1927
+4  18737            Die BЃchse der Pandora  1929
+5  19344                    Sadie Thompson  1928
+6  23817                   Blondie Johnson  1933
+7  23858                       Busy Bodies  1933
+8  34386                  When Ladies Meet  1941
+9  35966                  Hangmen Also Die  1943
+INFO:root:---------------------------------------------------------
+INFO:root:Searched [select * from movies where name ilike '%%'||%(title0)s||'%%'] with PostgreSQL for 1.8122551441192627 s
+INFO:root:      id                              name  year
+0  15174   Die Nibelungen Kriemhilds Rache  1924
+1  15175          Die Nibelungen Siegfried  1924
+2  15532  Die Abenteuer des Prinzen Achmed  1926
+3  18452                     Sugar Daddies  1927
+4  18737            Die BЃchse der Pandora  1929
+5  19344                    Sadie Thompson  1928
+6  23817                   Blondie Johnson  1933
+7  23858                       Busy Bodies  1933
+8  34386                  When Ladies Meet  1941
+9  35966                  Hangmen Also Die  1943
+INFO:root:---------------------------------------------------------
+INFO:root:Searched [select * from movies where name ilike %(title)s and year = %(year)s] with PostgreSQL for 1.6095831394195557 s
+INFO:root:Empty DataFrame
+Columns: [id, name, year]
+Index: []
+INFO:root:---------------------------------------------------------
+INFO:root:Searched [select * from movies where name ilike %(title)s] with PostgreSQL for 1.6656219959259033 s
+INFO:root:        id name  year
+0  1465478  Die  2010
+INFO:root:---------------------------------------------------------
+INFO:root:Searched [select * from movies where name ilike %(title)s and year = %(year)s] with PostgreSQL for 1.6360363960266113 s
+INFO:root:        id name  year
+0  1465478  Die  2010
+INFO:root:---------------------------------------------------------
+INFO:root:Searched [select * from movies where name ilike '%%'||%(title)s||'%%' and year = %(year)s] with PostgreSQL for 1.6310558319091797 s
+INFO:root:        id                                  name  year
+0  1255953                             Incendies  2010
+1  1288376                            Die Fremde  2010
+2  1462053                        Leading Ladies  2010
+3  1465478                                   Die  2010
+4  1540733                     A Good Day to Die  2010
+5  1549584              I Didnt Come Here to Die  2010
+6  1585255                          Die Friseuse  2010
+7  1588337               Des hommes et des dieux  2010
+8  1617620                 A Horrible Way to Die  2010
+9  1628726  Death Metal Are We Watching You Die?  2010
+INFO:root:---------------------------------------------------------
+INFO:root:Searched [select * from movies where (name ilike '%%'||%(title0)s||'%%') and year = %(year)s] with PostgreSQL for 1.6315202713012695 s
+INFO:root:        id                                  name  year
+0  1255953                             Incendies  2010
+1  1288376                            Die Fremde  2010
+2  1462053                        Leading Ladies  2010
+3  1465478                                   Die  2010
+4  1540733                     A Good Day to Die  2010
+5  1549584              I Didnt Come Here to Die  2010
+6  1585255                          Die Friseuse  2010
+7  1588337               Des hommes et des dieux  2010
+8  1617620                 A Horrible Way to Die  2010
+9  1628726  Death Metal Are We Watching You Die?  2010
+INFO:root:---------------------------------------------------------
