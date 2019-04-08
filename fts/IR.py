@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget
+from PyQt5.QtWidgets import QApplication, QWidget, QInputDialog, QLineEdit, QMessageBox
 from PyQt5 import uic, QtWidgets, QtCore, QtGui
 import psycopg2
 import pandas as pd
@@ -8,6 +8,7 @@ import time
 import lucene
 import os
 import logging
+import hashlib
 from IR_PandasModel import PandasModel
 
 from java.nio.file import Paths
@@ -28,6 +29,8 @@ class MyWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super(MyWindow, self).__init__()
 
+        self.ask_password()
+
         self.ui = uic.loadUi(PATH + "/design.ui", self)
         self.statusBar().showMessage('Ready')
 
@@ -37,7 +40,18 @@ class MyWindow(QtWidgets.QMainWindow):
         self.ui.comboBox.currentTextChanged.connect(self.on_change)
 
         self._layout = self.layout()
-
+    
+    def ask_password(self):
+        try:
+            text, okPressed = QInputDialog.getText(self, "Authentication","Enter your 'developer' password ;-)", QLineEdit.Password, "")
+            if hashlib.md5(text.encode('utf8')).hexdigest() == 'b8b2f3f552b8ee1465ad4c30f466f51b':
+                self.db_password=text
+            else:
+                raise Exception()
+        except:
+            QMessageBox.question(self, 'Authentication', "YOU SHALL NOT PASS!", QMessageBox.Ok)
+            sys.exit()
+    
     def button_search_clicked(self):
         t1 = time.time()
         title_substring = self.ui.lineEdit_title.text()
@@ -46,34 +60,40 @@ class MyWindow(QtWidgets.QMainWindow):
         # SQLite/PostgreSQL
         if not self.ui.radioButton_Lucene.isChecked():
             if mode == 'Полное совпадение':
-                query_string = """name ilike '{}'""".format(title_substring)
+                params={'title':title_substring}
+                query_string = """select * from movies where name ilike %(title)s"""
 
             if mode == 'Частичное совпадение':
-                query_string = """name ilike '%{}%'""".format(title_substring)
+                params={'title':title_substring}
+                query_string = """select * from movies where name ilike '%%'||%(title)s||'%%'"""
 
             if mode == 'Частичное совпадение по словам':
-                query_string = ' or '.join(["""name ilike '%{}%'""".format(ss) for ss in title_substring.split()])
+                params={'title'+str(i):v for i, v in enumerate(title_substring.split())}
+                query_string = """select * from movies where """+' or '.join(["""name ilike '%%'||%({})s||'%%'""".format(t) for t in params.keys()])
 
             if mode == 'Полное совпадение + Год':
                 year_substring = self.ui.lineEdit_year.text()
-                year_substring = '= ' + year_substring if year_substring != '' else ' is null'
-                query_string = """name ilike '{}' and year {}""".format(title_substring, year_substring)
+                year_substring = year_substring if year_substring != '' else None
+                params={'title':title_substring, 'year':year_substring}
+                query_string = """select * from movies where name ilike %(title)s and year = %(year)s"""
 
             if mode == 'Частичное совпадение + Год':
                 year_substring = self.ui.lineEdit_year.text()
-                year_substring = '= ' + year_substring if year_substring != '' else ' is null'
-                query_string = """name ilike '%{}%' and year {}""".format(title_substring, year_substring)
+                year_substring = year_substring if year_substring != '' else None
+                params={'title':title_substring, 'year':year_substring}
+                query_string = """select * from movies where name ilike '%%'||%(title)s||'%%' and year = %(year)s"""
 
             if mode == 'Частичное совпадение по словам + Год':
                 year_substring = self.ui.lineEdit_year.text()
-                year_substring = '= ' + year_substring if year_substring != '' else ' is null'
-                query_string = ' or '.join(["""name ilike '%{}%'""".format(ss) for ss in title_substring.split()])
-                query_string = '({}) and year {}'.format(query_string,year_substring)
+                year_substring = year_substring if year_substring != '' else None
+                params={'title'+str(i):v for i, v in enumerate(title_substring.split())}
+                query_string = ' or '.join(["""name ilike '%%'||%({})s||'%%'""".format(t) for t in params.keys()])
+                params.update({'year':year_substring})
+                query_string = 'select * from movies where ({}) and year = %(year)s'.format(query_string,year_substring)
 
             # PostgreSQL connection
             if self.ui.radioButton_PostgreSQL.isChecked():
-                con = psycopg2.connect(user='', password='', host='',
-                                       dbname='')
+                con = psycopg2.connect(user='developer', password=self.db_password, host='db.mirvoda.com', port='5454', dbname='information_retrieval')
                 se = 'PostgreSQL'
 
             # SQLite connection
@@ -81,7 +101,7 @@ class MyWindow(QtWidgets.QMainWindow):
                 con = sqlite3.connect(PATH + '/imdb.db')
                 se = 'SQLite'
 
-            df = pd.read_sql('select * from movies where ' + query_string, con).head(LIMIT)
+            df = pd.read_sql(query_string, con, params=params).head(LIMIT)
             con.close()
             df = df.fillna('').astype(str)
             df['year'] = df['year'].apply(lambda x: x.replace('.0', ''))
