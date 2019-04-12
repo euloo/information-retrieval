@@ -6,7 +6,7 @@
 
 [imdb_spider](imdb_spider) - директория Scrapy-проекта, включающая конфигурационные файлы и классы краулеров
 
-[test_imdb.py](test_imdb.py.py) - тестовый краулер imdb.com
+[test_imdb.py](test_imdb.py) - тестовый краулер imdb.com
 
 [test_kinopoisk.py](test_kinopoisk.py) - тестовый краулер kinopoisk.ru
 
