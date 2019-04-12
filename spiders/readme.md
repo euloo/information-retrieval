@@ -10,6 +10,10 @@
 
 [imdb_spider](imdb_spider) - директория Scrapy-проекта, включающая конфигурационные файлы и классы краулеров
 
+[imdb_res.py](imdb_res.py) - скрипт загрузки результатов парсинга в базу данных
+
+[kinopoisk_id_crawler.py](kinopoisk_id_crawler.py) - извлекатель идентификаторов фильмов с kinopoisk.ru, с помощью поиска по названию
+
 [test_imdb.py](test_imdb.py) - тестовый краулер imdb.com
 
 [test_kinopoisk.py](test_kinopoisk.py) - тестовый краулер kinopoisk.ru
