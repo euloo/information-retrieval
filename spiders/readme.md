@@ -1,6 +1,6 @@
 # Files descriptions
 
-**[imdb_spider/spiders/imdb.py](imdb.py) - файл, реализующий приложение с интерфейсом поиска (основной)**
+**[imdb_spider/spiders/imdb.py](imdb_spider/spiders/imdb.py) - файл, реализующий приложение с интерфейсом поиска (основной)**
 
 [IR_load.py](IR_load.py) - скрипт загрузки данных в базу данных PostgreSQL + Sqlite
 
