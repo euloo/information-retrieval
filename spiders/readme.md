@@ -1,6 +1,6 @@
 # Contributors
 
-Комлева Юлия, Никитина Наталья, [Габдулханов Марсель](https://github.com/gabmars)
+[Комлева Юлия](https://github.com/euloo), [Никитина Наталья](https://github.com/Nicklausse), [Габдулханов Марсель](https://github.com/gabmars)
 
 # Files descriptions
 
