@@ -4,7 +4,7 @@ import psycopg2
 import pandas as pd
 import re
 
-con = psycopg2.connect(user='developer', password='rtfP@ssw0rd', host='db.mirvoda.com', port='5454', dbname='information_retrieval')
+con = psycopg2.connect(user='', password='', host='', port='', dbname='information_retrieval')
 df=pd.read_sql('select * from imdb_movies',con)
 con.close()
 df['kinopoisk_id']=''
@@ -26,7 +26,7 @@ df=df.fillna('')
 #%%
 import psycopg2
 #%%
-con = psycopg2.connect(user='developer', password='rtfP@ssw0rd', host='db.mirvoda.com', port='5454', dbname='information_retrieval')
+con = psycopg2.connect(user='', password='', host='', port='', dbname='information_retrieval')
 cur = con.cursor()
 #%%
 n_chunks=16
