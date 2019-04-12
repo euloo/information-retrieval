@@ -1,3 +1,7 @@
+# Contributors
+
+Комлева Юлия, Никитина Наталья, Габдулханов Марсель(@gabmars)
+
 # Files descriptions
 
 **[imdb_spider/spiders/imdb.py](imdb_spider/spiders/imdb.py) - краулер imdb.com (основной)**
