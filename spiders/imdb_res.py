@@ -50,7 +50,7 @@ df=df[['id', 'year','title','releasedates','genres', 'director', 'top_3_cast', '
 #%%
 import psycopg2
 #%%
-con = psycopg2.connect(user='developer', password='rtfP@ssw0rd', host='db.mirvoda.com', port='5454', dbname='information_retrieval')
+con = psycopg2.connect(user='', password='', host='', port='', dbname='information_retrieval')
 cur = con.cursor()
 #%%
 n_chunks=16
