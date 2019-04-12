@@ -1,17 +1,17 @@
 # Files descriptions
 
-**[imdb_spider/spiders/imdb.py](imdb_spider/spiders/imdb.py) - файл, реализующий приложение с интерфейсом поиска (основной)**
+**[imdb_spider/spiders/imdb.py](imdb_spider/spiders/imdb.py) - краулер imdb.com (основной)**
 
-[IR_load.py](IR_load.py) - скрипт загрузки данных в базу данных PostgreSQL + Sqlite
+**[imdb_spider/spiders/kinopoisk.py](imdb_spider/spiders/kinopoisk.py) - краулер kinopoisk.ru (основной)**
 
-[IR_lucene_indexer.py](IR_lucene_indexer.py) - скрипт индексирования данных
+[imdb_spider](imdb_spider) - директория Scrapy-проекта, включающая конфигурационные файлы и классы краулеров
 
-[IR_lucene_retriever.py](IR_lucene_retriever.py) - тестовый скрипт поиска данных по индексу
+[test_imdb.py](test_imdb.py.py) - тестовый краулер imdb.com
 
-[check.py](check.py) - проверка зависимостей
+[test_kinopoisk.py](test_kinopoisk.py) - тестовый краулер kinopoisk.ru
 
-[resources.py](resources.py) - файл с ресурсами интерфейса
+[proxies.py](proxies.py) - скрипт собирающий прокси с помощью асинхронного модуля proxybroker
 
-[IR_PandasModel.py](IR_PandasModel.py)- модель **M**VC для отображения pandas dataframe 
+[fill_proxies.py](fill_proxies.py) - скрипт валидации прокси на выбранном ресурсе
 
-[search.log](search.log) - лог поиска
+[imdb_parallel.py](imdb_parallel.py) - тестовый мультпроцессный парсер imdb.com с прокруткой прокси
