@@ -19,7 +19,7 @@ def unauthorized():
 
 @app.errorhandler(400)
 def bad_request(error):
-    return make_response(jsonify({'error': 'Bad Request'}), 400)
+    return make_response(jsonify({'error': 'Bad Request: '+str(error)}), 400)
 
 
 @app.errorhandler(404)
@@ -80,6 +80,7 @@ def add_movie():
     if cnt > 0:
         abort(400)
 
+<<<<<<< HEAD:api/rest_api_test.py
     movie = {
         "id": request.json['id'],
         "year": request.json.get('year'),
@@ -97,11 +98,30 @@ def add_movie():
               ('genres', list), ('directors', list), ('top_3_cast', list), ('raiting', int),
               ('storyline', str), ('synopsis', str)]:
         if movie[v[0]] and not isinstance(movie[v[0]], v[1]):
+=======
+    movie={
+      "id": request.json['id'], 
+      "year": request.json.get('year'),
+      "title": request.json.get('title'), 
+      "release_dates": request.json.get('release_dates'), 
+      "genres": request.json.get('genres'), 
+      "directors": request.json.get('directors'), 
+      "top_3_cast": request.json.get('top_3_cast'), 
+      "rating": request.json.get('rating'), 
+      "storyline": request.json.get('storyline'), 
+      "synopsis": request.json.get('synopsis')
+    }
+    
+    for v in [('id',str),('year',int),('title',str),('release_dates',list),
+              ('genres',list),('directors',list),('top_3_cast',list),('rating',int),
+              ('storyline',str),('synopsis',str)]:
+        if movie[v[0]] and not isinstance(movie[v[0]],v[1]):
+>>>>>>> 224a1d4ed898d53b0d776791846392f65535433b:api/rest_api.py
             abort(400)
 
     cur.execute("""insert into imdb_movies_api 
                 values (%(id)s, %(year)s, %(title)s, %(release_dates)s,
-                %(genres)s, %(directors)s, %(top_3_cast)s, %(raiting)s, 
+                %(genres)s, %(directors)s, %(top_3_cast)s, %(rating)s, 
                  %(storyline)s, %(synopsis)s)""", movie)
     con.commit()
 
@@ -122,6 +142,7 @@ def update_movie(movie_id):
     res = cur.fetchall()
     if len(res) == 0:
         abort(404)
+<<<<<<< HEAD:api/rest_api_test.py
     movie = {
         "id": movie_id,
         "year": request.json.get('year', res[0]['year']),
@@ -139,13 +160,32 @@ def update_movie(movie_id):
               ('genres', list), ('directors', list), ('top_3_cast', list),
               ('raiting', int), ('storyline', str), ('synopsis', str)]:
         if movie[v[0]] and not isinstance(movie[v[0]], v[1]):
+=======
+    movie={
+      "id": movie_id, 
+      "year": request.json.get('year',res[0]['year']),
+      "title": request.json.get('title',res[0]['title']), 
+      "release_dates": request.json.get('release_dates',res[0]['release_dates']), 
+      "genres": request.json.get('genres',res[0]['genres']), 
+      "directors": request.json.get('directors',res[0]['directors']), 
+      "top_3_cast": request.json.get('top_3_cast',res[0]['top_3_cast']), 
+      "rating": request.json.get('rating',res[0]['raiting']), 
+      "storyline": request.json.get('storyline',res[0]['storyline']), 
+      "synopsis": request.json.get('synopsis',res[0]['synopsis'])
+    }
+    
+    for v in [('id',str),('year',int),('title',str),('release_dates',list),
+              ('genres',list),('directors',list),('top_3_cast',list),
+              ('rating',int),('storyline',str),('synopsis',str)]:
+        if movie[v[0]] and not isinstance(movie[v[0]],v[1]):
+>>>>>>> 224a1d4ed898d53b0d776791846392f65535433b:api/rest_api.py
             abort(400)
 
     cur.execute("""update imdb_movies_api set
                 year=%(year)s, title=%(title)s, 
                 release_dates=%(release_dates)s,genres=%(genres)s, 
                 directors=%(directors)s, top_3_cast=%(top_3_cast)s, 
-                raiting=%(raiting)s, storyline=%(storyline)s,
+                rating=%(rating)s, storyline=%(storyline)s,
                 synopsis=%(synopsis)s where id=%(id)s""", movie)
     con.commit()
 
