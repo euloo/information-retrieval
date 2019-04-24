@@ -79,20 +79,20 @@ def add_movie():
       "genres": request.json.get('genres'), 
       "directors": request.json.get('directors'), 
       "top_3_cast": request.json.get('top_3_cast'), 
-      "raiting": request.json.get('raiting'), 
+      "rating": request.json.get('rating'), 
       "storyline": request.json.get('storyline'), 
       "synopsis": request.json.get('synopsis')
     }
     
     for v in [('id',str),('year',int),('title',str),('release_dates',list),
-              ('genres',list),('directors',list),('top_3_cast',list),('raiting',int),
+              ('genres',list),('directors',list),('top_3_cast',list),('rating',int),
               ('storyline',str),('synopsis',str)]:
         if movie[v[0]] and not isinstance(movie[v[0]],v[1]):
             abort(400)
     
     cur.execute("""insert into imdb_movies_api 
                 values (%(id)s, %(year)s, %(title)s, %(release_dates)s,
-                %(genres)s, %(directors)s, %(top_3_cast)s, %(raiting)s, 
+                %(genres)s, %(directors)s, %(top_3_cast)s, %(rating)s, 
                  %(storyline)s, %(synopsis)s)""", movie)
     con.commit()
     
@@ -120,14 +120,14 @@ def update_movie(movie_id):
       "genres": request.json.get('genres',res[0]['genres']), 
       "directors": request.json.get('directors',res[0]['directors']), 
       "top_3_cast": request.json.get('top_3_cast',res[0]['top_3_cast']), 
-      "raiting": request.json.get('raiting',res[0]['raiting']), 
+      "rating": request.json.get('rating',res[0]['raiting']), 
       "storyline": request.json.get('storyline',res[0]['storyline']), 
       "synopsis": request.json.get('synopsis',res[0]['synopsis'])
     }
     
     for v in [('id',str),('year',int),('title',str),('release_dates',list),
               ('genres',list),('directors',list),('top_3_cast',list),
-              ('raiting',int),('storyline',str),('synopsis',str)]:
+              ('rating',int),('storyline',str),('synopsis',str)]:
         if movie[v[0]] and not isinstance(movie[v[0]],v[1]):
             abort(400)
     
@@ -135,7 +135,7 @@ def update_movie(movie_id):
                 year=%(year)s, title=%(title)s, 
                 release_dates=%(release_dates)s,genres=%(genres)s, 
                 directors=%(directors)s, top_3_cast=%(top_3_cast)s, 
-                raiting=%(raiting)s, storyline=%(storyline)s,
+                rating=%(rating)s, storyline=%(storyline)s,
                 synopsis=%(synopsis)s where id=%(id)s""", movie)
     con.commit()
     
