@@ -13,9 +13,7 @@ curl -i http://<HOST>:<PORT>/movies/api/imdb -u <USERNAME>:<PASSWORD>
 curl -i http://<HOST>:<PORT>/movies/api/imdb/<movie_id> -u <USERNAME>:<PASSWORD>
 ~~~~
 #### Пример
-~~~~
-
-~~~~
+![Alt text](images/get_movie.jpg?raw=true "Title")
 
 
 ### add_movie() (POST)
