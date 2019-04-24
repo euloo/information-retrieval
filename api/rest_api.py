@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, abort, make_response, request
 from flask.ext.httpauth import HTTPBasicAuth
+#from flask_httpauth import HTTPBasicAuth
 import hashlib
 import psycopg2
 from psycopg2.extras import RealDictCursor
