@@ -2,7 +2,7 @@
 ## REST API
 
 ### get_movies() (GET)
-Получить выборку из 100 случайных фильмов
+#### Получить выборку из 100 фильмов
 ~~~~
 curl -i http://<HOST>:<PORT>/movies/api/imdb -u <USERNAME>:<PASSWORD>
 ~~~~
@@ -15,6 +15,12 @@ curl -i http://<HOST>:<PORT>/movies/api/imdb/<movie_id> -u <USERNAME>:<PASSWORD>
 #### Пример
 ![Alt text](images/get_movie.jpg?raw=true "Title")
 
+
+### get_movie_by() (GET)
+#### Получить фильмы по фильтрам (год, жанр, режиссер)
+~~~~
+curl -i http://<HOST>:<PORT>/movies/api/imdb/by?[year=<year>&genre=<genre>&director=<director>] -u <USERNAME>:<PASSWORD>
+~~~~
 
 ### add_movie() (POST)
 #### Добавить фильм
