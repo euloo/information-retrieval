@@ -5,7 +5,7 @@ import hashlib
 import psycopg2
 from psycopg2.extras import RealDictCursor
 
-con_str = """"""
+# con_str = """"""
 
 auth = HTTPBasicAuth()
 
@@ -40,17 +40,19 @@ def verify_password(username, password):
         return m.hexdigest() == 'b8b2f3f552b8ee1465ad4c30f466f51b'
     return None
 
+
 # Список фильмов
 @app.route('/movies', methods=['GET'])
 @auth.login_required
 def get_movies():
     con = psycopg2.connect(con_str)
     cur = con.cursor(cursor_factory=RealDictCursor)
-    cur.execute("""SELECT * FROM imdb_movies_api ORDER BY RANDOM() LIMIT 100""")
+    cur.execute("""SELECT id, title FROM imdb_movies_api ORDER BY RANDOM() LIMIT 3""")
     res = cur.fetchall()
     cur.close()
     con.close()
     return jsonify({'movies': res})
+
 
 # Информация о фильме
 @app.route('/movies/<string:movie_id>', methods=['GET'])
@@ -65,6 +67,7 @@ def get_movie(movie_id):
     if len(res) == 0:
         abort(404)
     return jsonify({'movie': res})
+
 
 # Фильтр по жанру, году выпуска, режиссеру
 @app.route('/movies/by', methods=['GET'])
@@ -84,9 +87,9 @@ def get_movie_by():
 
     con = psycopg2.connect(con_str)
     cur = con.cursor(cursor_factory=RealDictCursor)
-    cur.execute(query + """LIMIT 100""", {"year": request.args.get('year'),
-                                          "genre": request.args.get('genre'),
-                                          "director": request.args.get('director')})
+    cur.execute(query + """LIMIT 3""", {"year": request.args.get('year'),
+                                        "genre": request.args.get('genre'),
+                                        "director": request.args.get('director')})
     res = cur.fetchall()
     cur.close()
     con.close()
@@ -98,7 +101,7 @@ def get_movie_by():
 @app.route('/movies/imdb', methods=['POST'])
 @auth.login_required
 def add_movie():
-    if not request.json or not 'id' in request.json:
+    if not (request.json and 'id' in request.json):
         abort(400)
     con = psycopg2.connect(con_str)
     cur = con.cursor()
@@ -202,3 +205,4 @@ def delete_task(movie_id):
 
 if __name__ == '__main__':
     app.run(debug=True)
+
