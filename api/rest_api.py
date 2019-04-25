@@ -5,7 +5,7 @@ import hashlib
 import psycopg2
 from psycopg2.extras import RealDictCursor
 
-con_str=""""""
+con_str="""user='developer' password='rtfP@ssw0rd' host='db.mirvoda.com' port='5454' dbname='information_retrieval'"""
 
 auth = HTTPBasicAuth()
 
@@ -40,7 +40,7 @@ def verify_password(username, password):
 def get_movies():
     con = psycopg2.connect(con_str)
     cur = con.cursor(cursor_factory=RealDictCursor)
-    cur.execute("""SELECT * FROM imdb_movies_api ORDER BY RANDOM() LIMIT 100""")
+    cur.execute("""SELECT id, title FROM imdb_movies_api LIMIT 100""")
     res=cur.fetchall()
     cur.close()
     con.close()
@@ -51,7 +51,7 @@ def get_movies():
 def get_movie(movie_id):
     con = psycopg2.connect(con_str)
     cur = con.cursor(cursor_factory=RealDictCursor)
-    cur.execute("""SELECT * FROM imdb_movies_api WHERE id = %(movie_id)s""", {"movie_id":movie_id.zfill(7)})
+    cur.execute("""SELECT id, title FROM imdb_movies_api WHERE id = %(movie_id)s""", {"movie_id":movie_id.zfill(7)})
     res=cur.fetchall()
     cur.close()
     con.close()
@@ -136,7 +136,7 @@ def update_movie(movie_id):
         abort(400)
     con = psycopg2.connect(con_str)
     cur = con.cursor(cursor_factory=RealDictCursor)
-    cur.execute("""SELECT * FROM imdb_movies_api WHERE id = %(movie_id)s""", {"movie_id":movie_id.zfill(7)})
+    cur.execute("""SELECT id, title FROM imdb_movies_api WHERE id = %(movie_id)s""", {"movie_id":movie_id.zfill(7)})
     res=cur.fetchall()
     if len(res) == 0:
         abort(404)
@@ -176,7 +176,7 @@ def update_movie(movie_id):
 def delete_task(movie_id):
     con = psycopg2.connect(con_str)
     cur = con.cursor(cursor_factory=RealDictCursor)
-    cur.execute("""SELECT * FROM imdb_movies_api WHERE id = %(movie_id)s""", {"movie_id":movie_id.zfill(7)})
+    cur.execute("""SELECT id, title FROM imdb_movies_api WHERE id = %(movie_id)s""", {"movie_id":movie_id.zfill(7)})
     res=cur.fetchall()
     if len(res) == 0:
         abort(404)
