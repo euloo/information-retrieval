@@ -40,7 +40,7 @@ def verify_password(username, password):
 def get_movies():
     con = psycopg2.connect(con_str)
     cur = con.cursor(cursor_factory=RealDictCursor)
-    cur.execute("""SELECT * FROM imdb_movies_api ORDER BY random() LIMIT 100""")
+    cur.execute("""SELECT * FROM imdb_movies_api ORDER BY RANDOM() LIMIT 100""")
     res=cur.fetchall()
     cur.close()
     con.close()
@@ -51,7 +51,34 @@ def get_movies():
 def get_movie(movie_id):
     con = psycopg2.connect(con_str)
     cur = con.cursor(cursor_factory=RealDictCursor)
-    cur.execute("""SELECT * FROM imdb_movies_api where id = %(movie_id)s""", {"movie_id":movie_id.zfill(7)})
+    cur.execute("""SELECT * FROM imdb_movies_api WHERE id = %(movie_id)s""", {"movie_id":movie_id.zfill(7)})
+    res=cur.fetchall()
+    cur.close()
+    con.close()
+    if len(res) == 0:
+        abort(404)
+    return jsonify({'movie': res})
+
+@app.route('/movies/api/imdb/by', methods=['GET'])
+@auth.login_required
+def get_movie_by():
+    if not request.args:
+        abort(400)
+    query="""SELECT id, title FROM imdb_movies_api WHERE 1=1 """
+    if request.args.get('year'):
+        query+="""AND year = %(year)s """
+    if request.args.get('genre'):
+        query+="""AND %(genre)s = ANY(genres) """
+    if request.args.get('director'):
+        query+="""AND %(director)s = ANY(directors) """
+    if query == """SELECT * FROM imdb_movies_api WHERE 1=1 """:
+        abort(400)
+    
+    con = psycopg2.connect(con_str)
+    cur = con.cursor(cursor_factory=RealDictCursor)
+    cur.execute(query+"""LIMIT 100""", {"year":request.args.get('year'),
+                                        "genre":request.args.get('genre'),
+                                        "director":request.args.get('director')})
     res=cur.fetchall()
     cur.close()
     con.close()
@@ -67,7 +94,7 @@ def add_movie():
     con = psycopg2.connect(con_str)
     cur = con.cursor()
     
-    cur.execute("""select count(*) from imdb_movies_api where id = %(movie_id)s""",{"movie_id":request.json['id']})
+    cur.execute("""SELECT COUNT(*) FROM imdb_movies_api WHERE id = %(movie_id)s""",{"movie_id":request.json['id']})
     cnt=cur.fetchone()[0]
     if cnt > 0:
         abort(400)
@@ -109,7 +136,7 @@ def update_movie(movie_id):
         abort(400)
     con = psycopg2.connect(con_str)
     cur = con.cursor(cursor_factory=RealDictCursor)
-    cur.execute("""SELECT * FROM imdb_movies_api where id = %(movie_id)s""", {"movie_id":movie_id.zfill(7)})
+    cur.execute("""SELECT * FROM imdb_movies_api WHERE id = %(movie_id)s""", {"movie_id":movie_id.zfill(7)})
     res=cur.fetchall()
     if len(res) == 0:
         abort(404)
@@ -149,12 +176,12 @@ def update_movie(movie_id):
 def delete_task(movie_id):
     con = psycopg2.connect(con_str)
     cur = con.cursor(cursor_factory=RealDictCursor)
-    cur.execute("""SELECT * FROM imdb_movies_api where id = %(movie_id)s""", {"movie_id":movie_id.zfill(7)})
+    cur.execute("""SELECT * FROM imdb_movies_api WHERE id = %(movie_id)s""", {"movie_id":movie_id.zfill(7)})
     res=cur.fetchall()
     if len(res) == 0:
         abort(404)
     
-    cur.execute("""delete from imdb_movies_api where id=%(movie_id)s""", {"movie_id":movie_id.zfill(7)})
+    cur.execute("""DELETE FROM imdb_movies_api WHERE id=%(movie_id)s""", {"movie_id":movie_id.zfill(7)})
     con.commit()
     
     cur.close()
