@@ -5,7 +5,7 @@ import hashlib
 import psycopg2
 from psycopg2.extras import RealDictCursor
 
-con_str="""user='developer' password='rtfP@ssw0rd' host='db.mirvoda.com' port='5454' dbname='information_retrieval'"""
+con_str=""""""
 
 auth = HTTPBasicAuth()
 
