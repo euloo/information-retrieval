@@ -5,6 +5,7 @@
 
 [rest_api_client.ipynb](rest_api_client.ipynb) - документация
 
+[nbviewer](https://nbviewer.jupyter.org/github/euloo/information-retrieval/blob/master/api/rest_api_client.ipynb) - документация (если ipynb не отображается)
 #### 1. Список фильмов
 `/movies`
 #### 2. Список фильмов с фильтром по жанру
