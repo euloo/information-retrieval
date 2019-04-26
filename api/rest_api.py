@@ -5,8 +5,7 @@ import hashlib
 import psycopg2
 from psycopg2.extras import RealDictCursor
 
-# con_str = """"""
-
+con_str=""" """
 auth = HTTPBasicAuth()
 
 app = Flask(__name__)
@@ -41,13 +40,25 @@ def verify_password(username, password):
     return None
 
 
-# Список фильмов
+# Список фильмов + фильтры
 @app.route('/movies', methods=['GET'])
 @auth.login_required
 def get_movies():
+
+    query = """SELECT id, title FROM imdb_movies_api WHERE 1=1 """
+    if request.args.get('year'):
+        query += """AND year = %(year)s """
+    if request.args.get('genre'):
+        query += """AND %(genre)s = ANY(genres) """
+    if request.args.get('director'):
+        query += """AND %(director)s = ANY(directors) """
+
     con = psycopg2.connect(con_str)
     cur = con.cursor(cursor_factory=RealDictCursor)
-    cur.execute("""SELECT id, title FROM imdb_movies_api ORDER BY RANDOM() LIMIT 3""")
+    cur.execute(query + """LIMIT 3""", {"year": request.args.get('year'),
+                                        "genre": request.args.get('genre'),
+                                        "director": request.args.get('director')})
+
     res = cur.fetchall()
     cur.close()
     con.close()
@@ -70,137 +81,137 @@ def get_movie(movie_id):
 
 
 # Фильтр по жанру, году выпуска, режиссеру
-@app.route('/movies/by', methods=['GET'])
-@auth.login_required
-def get_movie_by():
-    if not request.args:
-        abort(400)
-    query = """SELECT id, title FROM imdb_movies_api WHERE 1=1 """
-    if request.args.get('year'):
-        query += """AND year = %(year)s """
-    if request.args.get('genre'):
-        query += """AND %(genre)s = ANY(genres) """
-    if request.args.get('director'):
-        query += """AND %(director)s = ANY(directors) """
-    if query == """SELECT * FROM imdb_movies_api WHERE 1=1 """:
-        abort(400)
-
-    con = psycopg2.connect(con_str)
-    cur = con.cursor(cursor_factory=RealDictCursor)
-    cur.execute(query + """LIMIT 3""", {"year": request.args.get('year'),
-                                        "genre": request.args.get('genre'),
-                                        "director": request.args.get('director')})
-    res = cur.fetchall()
-    cur.close()
-    con.close()
-    if len(res) == 0:
-        abort(404)
-    return jsonify({'movie': res})
-
-
-@app.route('/movies/imdb', methods=['POST'])
-@auth.login_required
-def add_movie():
-    if not (request.json and 'id' in request.json):
-        abort(400)
-    con = psycopg2.connect(con_str)
-    cur = con.cursor()
-
-    cur.execute("""SELECT COUNT(*) FROM imdb_movies_api WHERE id = %(movie_id)s""", {"movie_id": request.json['id']})
-    cnt = cur.fetchone()[0]
-    if cnt > 0:
-        abort(400)
-
-    movie = {
-        "id": request.json['id'],
-        "year": request.json.get('year'),
-        "title": request.json.get('title'),
-        "release_dates": request.json.get('release_dates'),
-        "genres": request.json.get('genres'),
-        "directors": request.json.get('directors'),
-        "top_3_cast": request.json.get('top_3_cast'),
-        "raiting": request.json.get('raiting'),
-        "storyline": request.json.get('storyline'),
-        "synopsis": request.json.get('synopsis')
-    }
-
-    for v in [('id', str), ('year', int), ('title', str), ('release_dates', list),
-              ('genres', list), ('directors', list), ('top_3_cast', list), ('raiting', int),
-              ('storyline', str), ('synopsis', str)]:
-        if movie[v[0]] and not isinstance(movie[v[0]], v[1]):
-            abort(400)
-
-    cur.execute("""insert into imdb_movies_api 
-                values (%(id)s, %(year)s, %(title)s, %(release_dates)s,
-                %(genres)s, %(directors)s, %(top_3_cast)s, %(raiting)s, 
-                 %(storyline)s, %(synopsis)s)""", movie)
-    con.commit()
-
-    cur.close()
-    con.close()
-
-    return jsonify({'movie': movie}), 201
+# @app.route('/movies/by', methods=['GET'])
+# @auth.login_required
+# def get_movie_by():
+#     if not request.args:
+#         abort(400)
+#     query = """SELECT id, title FROM imdb_movies_api WHERE 1=1 """
+#     if request.args.get('year'):
+#         query += """AND year = %(year)s """
+#     if request.args.get('genre'):
+#         query += """AND %(genre)s = ANY(genres) """
+#     if request.args.get('director'):
+#         query += """AND %(director)s = ANY(directors) """
+#     if query == """SELECT * FROM imdb_movies_api WHERE 1=1 """:
+#         abort(400)
+#
+#     con = psycopg2.connect(con_str)
+#     cur = con.cursor(cursor_factory=RealDictCursor)
+#     cur.execute(query + """LIMIT 3""", {"year": request.args.get('year'),
+#                                         "genre": request.args.get('genre'),
+#                                         "director": request.args.get('director')})
+#     res = cur.fetchall()
+#     cur.close()
+#     con.close()
+#     if len(res) == 0:
+#         abort(404)
+#     return jsonify({'movie': res})
 
 
-@app.route('/movies/imdb/<string:movie_id>', methods=['PUT'])
-@auth.login_required
-def update_movie(movie_id):
-    if not request.json:
-        abort(400)
-    con = psycopg2.connect(con_str)
-    cur = con.cursor(cursor_factory=RealDictCursor)
-    cur.execute("""SELECT * FROM imdb_movies_api WHERE id = %(movie_id)s""", {"movie_id": movie_id.zfill(7)})
-    res = cur.fetchall()
-    if len(res) == 0:
-        abort(404)
-    movie = {
-        "id": movie_id,
-        "year": request.json.get('year', res[0]['year']),
-        "title": request.json.get('title', res[0]['title']),
-        "release_dates": request.json.get('release_dates', res[0]['release_dates']),
-        "genres": request.json.get('genres', res[0]['genres']),
-        "directors": request.json.get('directors', res[0]['directors']),
-        "top_3_cast": request.json.get('top_3_cast', res[0]['top_3_cast']),
-        "raiting": request.json.get('raiting', res[0]['raiting']),
-        "storyline": request.json.get('storyline', res[0]['storyline']),
-        "synopsis": request.json.get('synopsis', res[0]['synopsis'])
-    }
+# @app.route('/movies/imdb', methods=['POST'])
+# @auth.login_required
+# def add_movie():
+#     if not (request.json and 'id' in request.json):
+#         abort(400)
+#     con = psycopg2.connect(con_str)
+#     cur = con.cursor()
+#
+#     cur.execute("""SELECT COUNT(*) FROM imdb_movies_api WHERE id = %(movie_id)s""", {"movie_id": request.json['id']})
+#     cnt = cur.fetchone()[0]
+#     if cnt > 0:
+#         abort(400)
+#
+#     movie = {
+#         "id": request.json['id'],
+#         "year": request.json.get('year'),
+#         "title": request.json.get('title'),
+#         "release_dates": request.json.get('release_dates'),
+#         "genres": request.json.get('genres'),
+#         "directors": request.json.get('directors'),
+#         "top_3_cast": request.json.get('top_3_cast'),
+#         "raiting": request.json.get('raiting'),
+#         "storyline": request.json.get('storyline'),
+#         "synopsis": request.json.get('synopsis')
+#     }
+#
+#     for v in [('id', str), ('year', int), ('title', str), ('release_dates', list),
+#               ('genres', list), ('directors', list), ('top_3_cast', list), ('raiting', int),
+#               ('storyline', str), ('synopsis', str)]:
+#         if movie[v[0]] and not isinstance(movie[v[0]], v[1]):
+#             abort(400)
+#
+#     cur.execute("""insert into imdb_movies_api
+#                 values (%(id)s, %(year)s, %(title)s, %(release_dates)s,
+#                 %(genres)s, %(directors)s, %(top_3_cast)s, %(raiting)s,
+#                  %(storyline)s, %(synopsis)s)""", movie)
+#     con.commit()
+#
+#     cur.close()
+#     con.close()
+#
+#     return jsonify({'movie': movie}), 201
 
-    for v in [('id', str), ('year', int), ('title', str), ('release_dates', list),
-              ('genres', list), ('directors', list), ('top_3_cast', list),
-              ('raiting', int), ('storyline', str), ('synopsis', str)]:
-        if movie[v[0]] and not isinstance(movie[v[0]], v[1]):
-            abort(400)
 
-    cur.execute("""update imdb_movies_api set
-                year=%(year)s, title=%(title)s, 
-                release_dates=%(release_dates)s,genres=%(genres)s, 
-                directors=%(directors)s, top_3_cast=%(top_3_cast)s, 
-                raiting=%(raiting)s, storyline=%(storyline)s,
-                synopsis=%(synopsis)s where id=%(id)s""", movie)
-    con.commit()
+# @app.route('/movies/imdb/<string:movie_id>', methods=['PUT'])
+# @auth.login_required
+# def update_movie(movie_id):
+#     if not request.json:
+#         abort(400)
+#     con = psycopg2.connect(con_str)
+#     cur = con.cursor(cursor_factory=RealDictCursor)
+#     cur.execute("""SELECT * FROM imdb_movies_api WHERE id = %(movie_id)s""", {"movie_id": movie_id.zfill(7)})
+#     res = cur.fetchall()
+#     if len(res) == 0:
+#         abort(404)
+#     movie = {
+#         "id": movie_id,
+#         "year": request.json.get('year', res[0]['year']),
+#         "title": request.json.get('title', res[0]['title']),
+#         "release_dates": request.json.get('release_dates', res[0]['release_dates']),
+#         "genres": request.json.get('genres', res[0]['genres']),
+#         "directors": request.json.get('directors', res[0]['directors']),
+#         "top_3_cast": request.json.get('top_3_cast', res[0]['top_3_cast']),
+#         "raiting": request.json.get('raiting', res[0]['raiting']),
+#         "storyline": request.json.get('storyline', res[0]['storyline']),
+#         "synopsis": request.json.get('synopsis', res[0]['synopsis'])
+#     }
+#
+#     for v in [('id', str), ('year', int), ('title', str), ('release_dates', list),
+#               ('genres', list), ('directors', list), ('top_3_cast', list),
+#               ('raiting', int), ('storyline', str), ('synopsis', str)]:
+#         if movie[v[0]] and not isinstance(movie[v[0]], v[1]):
+#             abort(400)
+#
+#     cur.execute("""update imdb_movies_api set
+#                 year=%(year)s, title=%(title)s,
+#                 release_dates=%(release_dates)s,genres=%(genres)s,
+#                 directors=%(directors)s, top_3_cast=%(top_3_cast)s,
+#                 raiting=%(raiting)s, storyline=%(storyline)s,
+#                 synopsis=%(synopsis)s where id=%(id)s""", movie)
+#     con.commit()
+#
+#     cur.close()
+#     con.close()
+#     return jsonify({'movie': movie})
 
-    cur.close()
-    con.close()
-    return jsonify({'movie': movie})
 
-
-@app.route('/movies/imdb/<string:movie_id>', methods=['DELETE'])
-@auth.login_required
-def delete_task(movie_id):
-    con = psycopg2.connect(con_str)
-    cur = con.cursor(cursor_factory=RealDictCursor)
-    cur.execute("""SELECT * FROM imdb_movies_api WHERE id = %(movie_id)s""", {"movie_id": movie_id.zfill(7)})
-    res = cur.fetchall()
-    if len(res) == 0:
-        abort(404)
-
-    cur.execute("""DELETE FROM imdb_movies_api WHERE id=%(movie_id)s""", {"movie_id": movie_id.zfill(7)})
-    con.commit()
-
-    cur.close()
-    con.close()
-    return jsonify({'result': True})
+# @app.route('/movies/imdb/<string:movie_id>', methods=['DELETE'])
+# @auth.login_required
+# def delete_task(movie_id):
+#     con = psycopg2.connect(con_str)
+#     cur = con.cursor(cursor_factory=RealDictCursor)
+#     cur.execute("""SELECT * FROM imdb_movies_api WHERE id = %(movie_id)s""", {"movie_id": movie_id.zfill(7)})
+#     res = cur.fetchall()
+#     if len(res) == 0:
+#         abort(404)
+#
+#     cur.execute("""DELETE FROM imdb_movies_api WHERE id=%(movie_id)s""", {"movie_id": movie_id.zfill(7)})
+#     con.commit()
+#
+#     cur.close()
+#     con.close()
+#     return jsonify({'result': True})
 
 
 if __name__ == '__main__':
