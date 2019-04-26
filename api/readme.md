@@ -9,11 +9,11 @@
 #### 1. Список фильмов
 `/movies`
 #### 2. Список фильмов с фильтром по жанру
-`/movies/by?genre={genre}`
+`/movies?genre={genre}`
 #### 3. Список фильмов с фильтром по году выпуска
-`/movies/by?year={year}`
+`/movies?year={year}`
 #### 4. Список фильмов с фильтром по режиссёру выпуска
-`/movies/by?director={director}`
+`/movies?director={director}`
 #### 5. Информация о фильме
 `/movies/{id}`
 
