@@ -5,9 +5,7 @@ import hashlib
 import psycopg2
 from psycopg2.extras import RealDictCursor
 
-con_str = """"""
-
-
+con_str=""" """
 auth = HTTPBasicAuth()
 
 app = Flask(__name__)
@@ -54,8 +52,6 @@ def get_movies():
         query += """AND %(genre)s = ANY(genres) """
     if request.args.get('director'):
         query += """AND %(director)s = ANY(directors) """
-    if query == """SELECT * FROM imdb_movies_api WHERE 1=1 """:
-        abort(400)
 
     con = psycopg2.connect(con_str)
     cur = con.cursor(cursor_factory=RealDictCursor)
