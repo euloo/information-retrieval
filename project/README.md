@@ -29,13 +29,16 @@
 - Поиск по одному полю
 - Поиск по всем полям, но с выделением приоритетного поля (в идеале дать пользователю возможность задать иерархию полей т.е. бустинг может накладываться не на одно конкретное, а на все одновременно, в зависимости от их положения в иерархии)
 - Поиск с выделением ключевых слов, например с помощью заключения в «» (бустинг терминов)
+
 ![alt text](https://github.com/euloo/information-retrieval/blob/master/project/img/01.png)
+
 ![alt text](https://github.com/euloo/information-retrieval/blob/master/project/img/02.png)
 
 ## 4.	ВЫДЕЛЕНИЕ РЕЗУЛЬТАТА — RESULTS HIGHLIGHTING
 Выделение результатов подсвечивает части данных совпадающие с запросом пользователя, что делает систему поиска более наглядной.
 
 Внедрить в конечную систему инструменты выделения результатов поиска. Инструмент графического выделения выбрать самостоятельно, в зависимости от используемых технологий.
+
 ![alt text](https://github.com/euloo/information-retrieval/blob/master/project/img/03.png)
 
 ## 5.	СПОНСОРСКИЙ ПОИСК — SPONSORED SEARCH
@@ -48,7 +51,9 @@
 - Продумать поведение списка выдачи во время сортировки (должны ли спонсированные пункты игнорировать общую сортировку или нет).
 Для возможности пользовательского спонсирования, добавить вкладку с соответствующей функцией. В ней создать поле для поиска, которое должно будет однозначно идентифицировать фильм, который будет «спонсирован», а также поле для формирования запроса, который будет сохранен как спонсированный (все правила составления запроса должны соответствовать основному полю ввода и также включать все перечисленные в тз функции).
 Придумать способ хранения новых спонсорских запросов (исключая перестраивание индекса).
+
 ![alt text](https://github.com/euloo/information-retrieval/blob/master/project/img/04.png)
+
 ![alt text](https://github.com/euloo/information-retrieval/blob/master/project/img/05.png)
 
 ## 6.	АВТОПОДСТАНОВКА — AUTOCOMPLETE
@@ -58,6 +63,7 @@
 - Реализовать singleterm suggestion (обязательно)
 - Реализовать multiterm unordered suggestion (не обязательно)
 - Реализовать multiterm ordered suggestion (не обязательно)
+
 ![alt text](https://github.com/euloo/information-retrieval/blob/master/project/img/06.png)
 
 ## 7.	QUERY RE-RANKING
@@ -69,6 +75,7 @@
 
 Добавить возможность выбора поля(комбинаций полей) для группировки результатов.
 По возможности реализовать вложенные группировки.
+
 ![alt text](https://github.com/euloo/information-retrieval/blob/master/project/img/07.png)
 
 ## 9.	MORE LIKE THIS
@@ -78,14 +85,18 @@
 Добавлять к выдаче по основному запросу 2-3 morelikethis варианта.
 При отсутствии результатов по основному запросу, заполнить выдачу morelikethis вариантами.
 Добавить в приложение вкладку с полной информацией о фильме. Встроить в нее блок morelikethis вариантов.
+
 ![alt text](https://github.com/euloo/information-retrieval/blob/master/project/img/08.png)
+
 ![alt text](https://github.com/euloo/information-retrieval/blob/master/project/img/09.png)
 
 ## 10.	SPANQUERIES
 Span queries — это вид запросов, в которых можно задать структуру искомого значения, например сделать запрос на поиск именно по второму слову или по частям фразы. В таких запросах можно задать последовательность терминов и расстояние между ними.
 
 Встроить данный вид запросов в конечную систему. Придумать интуитивно понятный синтаксис для пользовательского поиска.
+
 ![alt text](https://github.com/euloo/information-retrieval/blob/master/project/img/10.png)
+
 ![alt text](https://github.com/euloo/information-retrieval/blob/master/project/img/11.png)
 
 ## 11.	РАСШИРЯЕМОСТЬ СЕРВИСА
